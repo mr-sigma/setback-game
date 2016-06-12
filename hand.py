@@ -16,3 +16,13 @@ class Hand():
         for card in self.hand:
             to_return += card.__str__() + '\n'
         return to_return
+
+    def add_card(self, *args):
+        """
+        Takes a list of cards and adds them to the hand
+        """
+        for card in args:
+            self.hand.append(card)
+
+    def play_card(self, index):
+        return self.hand.pop(index)

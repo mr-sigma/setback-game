@@ -8,7 +8,6 @@ class Deck:
         """
         self.deck = []
         self.shuffle()
-        pass
 
     def __str__(self):
         """
