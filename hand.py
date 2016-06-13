@@ -1,6 +1,8 @@
 """
 
 """
+import string
+
 class Hand():
     def __init__(self, *args):
         """
@@ -13,9 +15,19 @@ class Hand():
         Prints all cards in hand separated by a newline
         """
         to_return = ""
+        count = 0
         for card in self.hand:
-            to_return += card.__str__() + '\n'
+            to_return += string.ascii_lowercase[count] +\
+            ") " +\
+            card.__str__() + '\n'
+            count += 1
         return to_return
+
+    def number_of_cards(self):
+        """
+        Returns the number of cards in the hand
+        """
+        return len(self.hand)
 
     def add_card(self, *args):
         """

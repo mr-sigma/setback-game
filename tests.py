@@ -1,6 +1,7 @@
 from card import Card
 from hand import Hand
 from deck import Deck
+from player import Player
 
 print("----------Card Tests----------")
 a = Card(11, "S")
@@ -25,4 +26,11 @@ deck.shuffle()
 print(deck)
 a = deck.deal()
 print("Dealt card:", a)
-print(deck)
+print(deck, "\n")
+
+print("----------Player Tests----------")
+player = Player(12, True, Hand(a, b, c))
+player.print_hand()
+player.player_bid()
+player.play_card()
+player.print_hand()
