@@ -2,6 +2,7 @@ from card import Card
 from hand import Hand
 from deck import Deck
 from player import Player
+from setback import Setback
 
 print("----------Card Tests----------")
 a = Card(11, "S")
@@ -34,3 +35,7 @@ player.print_hand()
 player.player_bid()
 player.play_card()
 player.print_hand()
+
+print("----------Setback Tests----------")
+setback = Setback()
+setback.play()
