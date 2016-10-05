@@ -42,5 +42,16 @@ class Hand():
     def play_card(self, index):
         return self.hand.pop(index)
 
+    def play_cards(self, *args):
+        for arg in args:
+            self.play_card(arg)
+
+    def find_suit(self, suit):
+        off_trump = []
+        for i in range len(self.hand):
+            if card.get_suit != suit:
+                off_trump = off_trump + [i]
+        return off_trump
+
     def dump_hand(self):
         self.hand = []

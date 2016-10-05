@@ -96,3 +96,11 @@ setback.players[0].hand.dump_hand()
 setback.players[0].print_hand()
 setback.players[1].dump_hand()
 setback.players[1].print_hand()
+
+print(setback)
+
+print("---------Gameplay Tests-------------")
+setback = Setback()
+setback.deck.shuffle()
+setback.deal()
+setback.bid()

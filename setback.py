@@ -23,26 +23,29 @@ class Setback:
 
     def __str__(self):
         to_return = ""
+
+        # General Stats
+        to_return += "\n-------------------\nGeneral Stats\n-------------------\n"
         # Print Players
         to_return += "Number of Players: " + str(self.num_players) + "\n"
         # Print Computers
         to_return += "Number of Computers: " + str(self.num_cpu) + "\n"
         # Print Dealer
         to_return += "Current Dealer: Player " + str(self.dealer + 1) + "\n"
-        # Print len of Players array
-        to_return += str(len(self.players))
 
         # Print Hands
-        to_return += "\nPrinting Hands...\n-------------------"
+        to_return += "\n-------------------\nPrinting Hands\n-------------------\n"
         for i in range(len(self.players)):
-            to_return += "Player " + str(i + 1) + "\n"
-            to_return += self.players[i].print_hand()
+            to_return += "<<Player " + str(i + 1) + ">>\n"
+            to_return += self.players[i].hand.__str__() + "\n"
             to_return += "\n"
+
+        to_return += "<<Trick>>\n" + self.community.__str__()
         return to_return
 
     def deal(self):
         deal_counter = 0
-        while self.deck.cards_remaining() > 0:
+        for dummy_i in range(6 * self.num_players):
             # self.players[deal_counter % (self.num_players)].hand.add_card(self.deck.deal())
             # self.players[2].hand.add_card(self.deck.deal())
             self.players[deal_counter % self.num_players].hand.add_card(self.deck.deal())
@@ -57,7 +60,7 @@ class Setback:
             # bid_list[i] = players[i % self.dealer].player_bid()
             current_bid = self.players[i].player_bid()
             print("Player {} bids {} points".format(i + 1, current_bid))
-            if current_bid > winning_bid:
+            if current_bid > winning_bid or (current_bid == winning_bid and i == self.dealer):
                 winning_bid = current_bid
                 bid_winner = i
 
@@ -66,10 +69,41 @@ class Setback:
             winning_bid = 2
             print("Dealer takes force bid for two (2) points")
         else:
-            print("Player {} wins the bid with {} points".format(bid_winner + 1, winning_bid))
+            print()
+            print("----------------End of Bidding----------------")
+            print("Player {} wins the bid with {} points\n".format(bid_winner + 1, winning_bid))
+        return bid_winner, winning_bid
+
+    def pick_trump(self, bidder):
+        """
+
+        """
+        suits = ["S", "C", "H", "D"]
+        print("Player {}, please select a Trump suit:\n(S)pades\n(C)lubs\n(D)iamonds\n(H)earts\n")
+        self.players[bidder].print_hand()
+
+        choice = input(">>").upper()
+
+        while choice.upper() not in suits:
+            choice = input("Please select a valid suit:\n(S)pades\n(C)lubs\n(D)iamonds\n(H)earts\n").upper()
+
+        return choice
+
+    def round(self, trump, bidder):
 
 
     def play(self):
+        # Shuffle and deal
         self.deck.shuffle()
         self.deal()
-        self.bid()
+
+        # Bid and let the winner pick the trump suit
+        bid_winner = self.bid()
+        trump_suit = self.pick_trump(bid_winner)
+
+        # Discard and re-draw?
+        for player in self.players:
+            off_trump = player.hand.find_suit(trump_suit)
+            player.hand.play_cards(off_trump)
+
+        # Play a round with the given trump suit and bidder
