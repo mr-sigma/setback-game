@@ -10,23 +10,49 @@ class Setback:
         self.deck = Deck()
         self.community = Hand()
         # need to find a way to generate computer players
-        self.players = [
-            Player(i + 1,
-                True if i >= num_cpu else False
-            ) for i in range(self.num_players)
-        ]
+        # self.players = [
+        #     Player(i + 1,
+        #         True if i >= num_cpu else False
+        #     ) for i in range(self.num_players)
+        # ]
+        self.init_players()
         self.dealer = 0
         self.bid_winner = 0
         self.winning_bid = 0
 
     def __str__(self):
         to_return = ""
+        # Print Players
+        to_return += "Number of Players: " + str(self.num_players) + "\n"
+        # Print Computers
+        to_return += "Number of Computers: " + str(self.num_cpu) + "\n"
+        # Print Dealer
+        to_return += "Current Dealer: Player " + str(self.dealer + 1) + "\n"
+        # Print len of Players array
+        to_return += str(len(self.players))
+
+        # Print Hands
+        to_return += "\nPrinting Hands...\n-------------------"
+        for i in range(len(self.players)):
+            to_return += "Player " + str(i + 1) + "\n"
+            to_return += self.players[i].print_hand()
+            to_return += "\n"
         return to_return
+
+    def init_players(self):
+        self.players = []
+        for i in range(self.num_players):
+            is_cpu = True if i >= self.num_cpu else False
+            self.players.append(Player(i+1, is_cpu, Hand()))
 
     def deal(self):
         deal_counter = 0
         while self.deck.cards_remaining() > 0:
-            self.players[deal_counter % 4].hand.add_card([self.deck.deal()])
+            # self.players[deal_counter % (self.num_players)].hand.add_card(self.deck.deal())
+            # self.players[2].hand.add_card(self.deck.deal())
+            self.players[deal_counter % self.num_players].hand.add_card(self.deck.deal())
+            print(deal_counter%self.num_players)
+            deal_counter += 1
 
     def bid(self):
         valid = [0, 2, 3, 4, 5]
@@ -34,7 +60,7 @@ class Setback:
         winning_bid = 0
         for i in range(self.num_players):
             # bid_list[i] = players[i % self.dealer].player_bid()
-            current_bid = self.players[(i + self.dealer) % self.num_players].player_bid()
+            current_bid = self.players[i].player_bid()
             print("Player {} bids {} points".format(i + 1, current_bid))
             if current_bid > winning_bid:
                 winning_bid = current_bid

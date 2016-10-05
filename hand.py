@@ -15,12 +15,12 @@ class Hand():
         Prints all cards in hand separated by a newline
         """
         to_return = ""
-        count = 0
-        for card in self.hand:
-            to_return += string.ascii_lowercase[count] +\
-            ") " +\
-            card.__str__() + '\n'
-            count += 1
+        if len(self.hand) == 0:
+            to_return += "Empty"
+        else:
+            for i in range(len(self.hand)):
+                to_return += string.ascii_lowercase[i] +\
+                ") " + self.hand[i].__str__() + '\n'
         return to_return
 
     def number_of_cards(self):
@@ -29,12 +29,15 @@ class Hand():
         """
         return len(self.hand)
 
-    def add_card(self, *args):
+    def add_card(self, card):
         """
         Takes a list of cards and adds them to the hand
         """
+        self.hand.append(card)
+
+    def add_cards(self, *args):
         for card in args:
-            self.hand.append(card)
+            self.add_card(card)
 
     def play_card(self, index):
         return self.hand.pop(index)

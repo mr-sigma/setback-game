@@ -14,8 +14,11 @@ class Deck:
         Prints out the cards in the deck
         """
         to_return = ""
-        for card in self.deck:
-            to_return += card.__str__() + "\n"
+        if len(self.deck) == 0:
+            to_return += "Empty"
+        else:
+            for card in self.deck:
+                to_return += card.__str__() + "\n"
         return to_return
 
     def shuffle(self):

@@ -11,13 +11,14 @@ class Player:
         self.hand = hand
         self.won_tricks = Hand()
 
-    def player_bid(self):
+    def player_bid(self, bid = 0):
         # if self.human:
         if True: # short circuit for the time being
             self.print_hand()
             while True:
-                bid = input("Player {}, ".format(self.player_number) +
-                "what is your bid?\n(Min 2, Max 5, 0 to pass)\n>> ".format(self.player_number))
+                if not bid:
+                    bid = input("Player {}, ".format(self.player_number) +
+                    "what is your bid?\n(Min 2, Max 5, 0 to pass)\n>> ".format(self.player_number))
                 if int(bid) in VALID_BIDS:
                     return int(bid)
                 else:
@@ -29,14 +30,15 @@ class Player:
 
     def print_hand(self):
         print()
-        print("Your hand:")
+        print("Hand:")
         print(self.hand)
 
-    def play_card(self):
+    def play_card(self, to_play=""):
         valid_plays = string.ascii_lowercase[0:self.hand.number_of_cards()]
         while True:
-            self.print_hand()
-            to_play = input("Which card will you play?\n>> ")
+            if not to_play:
+                self.print_hand()
+                to_play = input("Which card will you play?\n>> ")
             if to_play in valid_plays:
                 self.hand.play_card(string.ascii_lowercase.index(to_play))
                 break
