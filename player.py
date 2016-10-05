@@ -5,10 +5,10 @@ import string
 VALID_BIDS = [0, 2, 3, 4, 5]
 
 class Player:
-    def __init__(self, player_number, human = True, hand = Hand()):
+    def __init__(self, player_number, human = True):
         self.player_number = player_number
         self.human = human
-        self.hand = hand
+        self.hand = Hand()
         self.won_tricks = Hand()
 
     def player_bid(self, bid = 0):

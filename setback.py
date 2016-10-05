@@ -9,13 +9,14 @@ class Setback:
         self.num_cpu = num_cpu
         self.deck = Deck()
         self.community = Hand()
+
         # need to find a way to generate computer players
-        # self.players = [
-        #     Player(i + 1,
-        #         True if i >= num_cpu else False
-        #     ) for i in range(self.num_players)
-        # ]
-        self.init_players()
+        self.players = []
+        for i in range(self.num_players):
+            is_cpu = True if i >= self.num_cpu else False
+            new_player = Player(i+1, is_cpu)
+            self.players = self.players + [new_player]
+
         self.dealer = 0
         self.bid_winner = 0
         self.winning_bid = 0
@@ -38,12 +39,6 @@ class Setback:
             to_return += self.players[i].print_hand()
             to_return += "\n"
         return to_return
-
-    def init_players(self):
-        self.players = []
-        for i in range(self.num_players):
-            is_cpu = True if i >= self.num_cpu else False
-            self.players.append(Player(i+1, is_cpu, Hand()))
 
     def deal(self):
         deal_counter = 0

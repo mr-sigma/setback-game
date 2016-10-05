@@ -4,11 +4,11 @@
 import string
 
 class Hand():
-    def __init__(self, *args):
+    def __init__(self):
         """
-        Accepts any arbitrary number of cards
+        Is empty to begin with
         """
-        self.hand = [arg for arg in args]
+        self.hand = []
 
     def __str__(self):
         """
@@ -31,9 +31,9 @@ class Hand():
 
     def add_card(self, card):
         """
-        Takes a list of cards and adds them to the hand
+        Takes a single card and adds it to the hand
         """
-        self.hand.append(card)
+        self.hand = self.hand + [card]
 
     def add_cards(self, *args):
         for card in args:
