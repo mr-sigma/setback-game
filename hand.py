@@ -41,3 +41,6 @@ class Hand():
 
     def play_card(self, index):
         return self.hand.pop(index)
+
+    def dump_hand(self):
+        self.hand = []

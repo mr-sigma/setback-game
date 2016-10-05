@@ -44,3 +44,6 @@ class Player:
                 break
             else:
                 print("\nPlease make a valid selection\n")
+
+    def dump_hand(self):
+        self.hand.dump_hand()
