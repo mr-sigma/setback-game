@@ -79,18 +79,22 @@ class Setback:
 
         """
         suits = ["S", "C", "H", "D"]
-        print("Player {}, please select a Trump suit:\n(S)pades\n(C)lubs\n(D)iamonds\n(H)earts\n")
+        print("\nPlayer {}, please select a Trump suit:\n(S)pades\n(C)lubs\n(D)iamonds\n(H)earts\n".format(bidder + 1))
         self.players[bidder].print_hand()
 
         choice = input(">>").upper()
 
         while choice.upper() not in suits:
-            choice = input("Please select a valid suit:\n(S)pades\n(C)lubs\n(D)iamonds\n(H)earts\n").upper()
+            self.players[bidder].print_hand()
+            choice = input("Please select a valid suit:\n(S)pades\n(C)lubs\n(D)iamonds\n(H)earts\n>>").upper()
 
         return choice
 
     def round(self, trump, bidder):
+        # whoever won bid goes first
+        # lead with trump
 
+        pass
 
     def play(self):
         # Shuffle and deal
@@ -98,12 +102,15 @@ class Setback:
         self.deal()
 
         # Bid and let the winner pick the trump suit
-        bid_winner = self.bid()
+        bid_winner, winning_bid  = self.bid()
         trump_suit = self.pick_trump(bid_winner)
 
         # Discard and re-draw?
         for player in self.players:
-            off_trump = player.hand.find_suit(trump_suit)
+            off_trump = player.hand.find_off_suit(trump_suit)
             player.hand.play_cards(off_trump)
+            while player.hand.number_of_cards() != 6:
+                player.hand.add_card(self.deck.deal())
+            player.print_hand()
 
         # Play a round with the given trump suit and bidder
