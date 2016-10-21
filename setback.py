@@ -107,8 +107,15 @@ class Setback:
 
         # Discard and re-draw?
         for player in self.players:
-            off_trump = player.hand.find_off_suit(trump_suit)
-            player.hand.play_cards(off_trump)
+            for card in player.hand.get_hand():
+                to_keep = []
+                if card.get_suit() == trump_suit:
+                    print('card', card)
+                    to_keep = to_keep + [card]
+                player.hand.dump_hand()
+                player.hand.add_cards(to_keep)
+            # off_trump = player.hand.find_off_suit(trump_suit)
+            # player.hand.play_cards(off_trump)
             while player.hand.number_of_cards() != 6:
                 player.hand.add_card(self.deck.deal())
             player.print_hand()

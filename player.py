@@ -2,7 +2,7 @@ from card import Card
 from hand import Hand
 import string
 
-VALID_BIDS = [0, 2, 3, 4, 5]
+VALID_BIDS = [0, 2., 3., 4., 5.]
 
 class Player:
     def __init__(self, player_number, human = True):
@@ -19,10 +19,10 @@ class Player:
                 if not bid:
                     bid = input("Player {}, ".format(self.player_number) +
                     "what is your bid?\n(Min 2, Max 5, 0 to pass)\n>> ".format(self.player_number))
-                if int(bid) in VALID_BIDS:
-                    return int(bid)
-                else:
-                    print("\nPlease enter a valid bid\n")
+                while int(bid) not in VALID_BIDS:
+                    # can break this by inputting a string
+                    bid = input("\nPlease enter a valid bid\n")
+                return int(bid)
 
         else:
             # Will implement AI for bidding later

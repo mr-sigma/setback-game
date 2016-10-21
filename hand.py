@@ -23,6 +23,12 @@ class Hand():
                 ") " + self.hand[i].__str__() + '\n'
         return to_return
 
+    def get_hand(self):
+        """
+        Returns an array of cards
+        """
+        return self.hand
+
     def number_of_cards(self):
         """
         Returns the number of cards in the hand
@@ -35,11 +41,11 @@ class Hand():
         """
         self.hand = self.hand + [card]
 
-    def add_cards(self, *args):
+    def add_cards(self, cards):
         """
-        Adds an arbitrary number of cards to the hand
+        Adds an arbitrary number of cards to the hand from a list
         """
-        for card in args:
+        for card in cards:
             self.add_card(card)
 
     def play_card(self, index):
