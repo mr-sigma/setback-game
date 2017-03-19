@@ -39,9 +39,12 @@ print("----------Deck Tests----------")
 deck = Deck()
 deck.shuffle()
 print(deck)
+print(deck.cards_remaining())
 a = deck.deal()
 print("Dealt card:", a)
 print(deck, "\n")
+print(deck.cards_remaining())
+
 
 print("-----------Deck-Hand Interactions----------")
 deck = Deck()

@@ -4,11 +4,13 @@
 import string
 
 class Hand():
-    def __init__(self):
+    def __init__(self, cards=[]):
         """
-        Is empty to begin with
+        Is empty to begin with, will add from list of cards
         """
         self.hand = []
+        if cards:
+            self.add_cards(cards)
 
     def __str__(self):
         """
@@ -54,26 +56,19 @@ class Hand():
         """
         return self.hand.pop(index)
 
-    def play_cards(self, indicies):
-        """
-        Pops an arbitrary number of cards at the given indicies (given as list)
-        """
-        for index in indicies:
-            print('index',index)
-            self.play_card(index)
-
     def find_off_suit(self, suit):
         off_suit = []
         for i in range(len(self.hand)):
-            if self.hand[i].get_suit().lower() != suit.lower():
-                off_suit = off_suit + [i]
+            card = self.hand[i]
+            if card.get_suit().lower() != suit.lower():
+                off_suit = off_suit + [card]
         return off_suit
 
     def find_suit(self, suit):
         suited = []
-        for i in range(len(self.hand)):
-            if card.get_suit == suit:
-                suited = suited + [i]
+        for card in self.hand:
+            if card.get_suit() == suit:
+                suited = suited + [card]
         return suited
 
     def dump_hand(self):
