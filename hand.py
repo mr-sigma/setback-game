@@ -29,7 +29,7 @@ class Hand():
         """
         Returns an array of cards
         """
-        return self.hand
+        return Hand(self.hand)
 
     def number_of_cards(self):
         """

@@ -11,6 +11,12 @@ class Player:
         self.hand = Hand()
         self.won_tricks = Hand()
 
+    def add_card(self, card):
+        self.hand.add_card(card)
+
+    def add_cards(self, cards):
+        self.hand.add_cards(cards)
+
     def player_bid(self, bid = 0):
         # if self.human:
         if True: # short circuit for the time being
@@ -26,12 +32,17 @@ class Player:
 
         else:
             # Will implement AI for bidding later
+            # Probably just look for Ace and a Face to bid 3 on
+            # Maybe King or higher is a two bid
             pass
 
     def print_hand(self):
         print()
         print("Hand:")
         print(self.hand)
+
+    def get_hand(self):
+        return self.hand.get_hand()
 
     def play_card(self, to_play=""):
         valid_plays = string.ascii_lowercase[0:self.hand.number_of_cards()]
@@ -40,8 +51,7 @@ class Player:
                 self.print_hand()
                 to_play = input("Which card will you play?\n>> ")
             if to_play in valid_plays:
-                self.hand.play_card(string.ascii_lowercase.index(to_play))
-                break
+                return self.hand.play_card(string.ascii_lowercase.index(to_play))
             else:
                 print("\nPlease make a valid selection\n")
 

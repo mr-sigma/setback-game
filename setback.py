@@ -46,10 +46,7 @@ class Setback:
     def deal(self):
         deal_counter = 0
         for dummy_i in range(6 * self.num_players):
-            # self.players[deal_counter % (self.num_players)].hand.add_card(self.deck.deal())
-            # self.players[2].hand.add_card(self.deck.deal())
             self.players[deal_counter % self.num_players].hand.add_card(self.deck.deal())
-            print(deal_counter%self.num_players)
             deal_counter += 1
 
     def bid(self):
@@ -90,9 +87,24 @@ class Setback:
 
         return choice
 
+    def discard_non_trump(self, trump, player_hand):
+        to_keep = Hand()
+        for card in player_hand.hand:
+            if card.get_suit() == trump:
+                to_keep.add_card(card)
+        while to_keep.number_of_cards() < 6:
+            to_keep.add_card(self.deck.deal())
+        return to_keep
+
     def round(self, trump, bidder):
         # whoever won bid goes first
         # lead with trump
+        trick_leader = bidder
+        print("Player {}, please lead with the trump suit:".format(trick_leader))
+        for trick in range(0,6):
+            for count in range(0, self.num_players):
+                current_player = (trick_leader + count) % self.num_players
+                self.players[current_player]
 
         pass
 
@@ -105,17 +117,9 @@ class Setback:
         bid_winner, winning_bid  = self.bid()
         trump_suit = self.pick_trump(bid_winner)
 
-        # Discard and re-draw?
+        # Discard and re-draw
         for player in self.players:
-            for card in player.hand.get_hand():
-                to_keep = []
-                if card.get_suit() == trump_suit:
-                    print('card', card)
-                    to_keep = to_keep + [card]
-                player.hand.dump_hand()
-                player.hand.add_cards(to_keep)
-            while player.hand.number_of_cards() != 6:
-                player.hand.add_card(self.deck.deal())
-            player.print_hand()
+            player.hand = self.discard_non_trump(trump_suit, player.get_hand())
 
         # Play a round with the given trump suit and bidder
+        self.round(trump_suit, bidder_winner)

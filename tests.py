@@ -1,3 +1,5 @@
+import unittest
+
 from card import Card
 from hand import Hand
 from deck import Deck
@@ -5,106 +7,143 @@ from player import Player
 from setback import Setback
 import gc
 
-print("----------Card Tests----------")
-a = Card(11, "S")
-b = Card(10, "H")
-c = Card(14, "C")
+class TestCardMethods(unittest.TestCase):
+    """
+    Test the methods of the Card class
+    """
+    def setUp(self):
+        """
+        Initilize cards of different rank and suit
+        """
+        self.card1 = Card(11, "S") # jack
+        self.card2 = Card(13, "C") # king
+        self.card3 = Card(2, "D")
+        self.card4 = Card(7, "H")
+        self.card5 = Card(12, "H") # queen
+        self.card6 = Card(14, "S") # ace
 
-print(a, b, c,'\n')
+    def test_get_suit(self):
+        """
+        Test get_suit method
+        """
+        self.assertEqual(self.card1.get_suit(), "S", "Suit should be Spades")
+        self.assertEqual(self.card2.get_suit(), "C", "Suit should be Clubs")
+        self.assertEqual(self.card3.get_suit(), "D", "Suit should be Diamonds")
+        self.assertEqual(self.card4.get_suit(), "H", "Suit should be Hearts")
 
-print("----------Hand Tests----------")
-hand = Hand()
-hand.add_cards([a,b,c])
-print(hand,"\n")
-empty_hand = Hand()
-print("empty hand:", empty_hand, "\n")
-print("full hand:", hand, "\n")
-empty_hand.add_card(a)
-empty_hand.add_card(b)
-print("empty hand added card:", '\n', empty_hand, "\n")
-print("played card:", empty_hand.play_card(1))
+    def test_get_rank(self):
+        """
+        Test get_rank method
+        """
+        self.assertEqual(self.card1.get_rank(), 11, "Rank should be 11")
+        self.assertEqual(self.card5.get_rank(), 12, "Rank should be 12")
+        self.assertEqual(self.card2.get_rank(), 13, "Rank should be 13")
+        self.assertEqual(self.card6.get_rank(), 14, "Rank should be 14")
+        self.assertEqual(self.card4.get_rank(), 7, "Rank should be 7")
 
-print("-----------More Hand Tests-----------")
-hand1 = Hand()
-hand1.add_cards([a,b])
-hand2 = Hand()
-hand2.add_cards([c])
-print("hand1", hand1)
-print("hand2", hand2)
-hand2.add_card(b)
-print(hand1)
-print(hand2)
+class TestHandMethods(unittest.TestCase):
+    def setUp(self):
+        self.card1 = Card(11, "S")
+        self.card2 = Card(10, "H")
+        self.card3 = Card(14, "C")
+        self.card4 = Card(3, "D")
+        self.hand1 = Hand([self.card1, self.card2, self.card3])
+        self.hand2 = Hand()
 
-print("----------Deck Tests----------")
-deck = Deck()
-deck.shuffle()
-print(deck)
-print(deck.cards_remaining())
-a = deck.deal()
-print("Dealt card:", a)
-print(deck, "\n")
-print(deck.cards_remaining())
+    def test_add_card(self):
+        self.assertEqual(self.hand2.number_of_cards(), 0, "hand3 is not empty to begin with")
+        self.hand2.add_card(self.card4)
+        self.assertEqual(self.hand2.number_of_cards(), 1, "hand3 could not add initial card")
+        self.hand2.add_card(self.card1)
+        self.assertEqual(self.hand2.number_of_cards(), 2, "hand3 does not contain exactly two cards after adding")
+
+    def test_add_cards(self):
+        self.assertEqual(self.hand2.number_of_cards(), 0)
+        self.hand2.add_cards([self.card1, self.card2, self.card3])
+        self.assertEqual(self.hand2.number_of_cards(), 3)
+
+    def test_get_hand(self):
+        self.assertIsInstance(self.hand1.get_hand(), Hand, "get_hand did not return a Hand")
+        self.assertIsInstance(self.hand2.get_hand(), Hand, "get_hand did not return a Hand")
+
+    def test_play_card(self):
+        self.hand2.add_cards([self.card1, self.card2])
+        played_card = self.hand2.play_card(1)
+        self.assertIsInstance(played_card, Card)
+        self.assertEqual(played_card.get_suit(), "H")
+        self.assertEqual(played_card.get_rank(), 10)
+        self.assertEqual(self.hand2.number_of_cards(), 1)
+
+    def test_dump_hand(self):
+        self.assertEqual(self.hand1.number_of_cards(), 3)
+        self.hand1.dump_hand()
+        self.assertEqual(self.hand1.number_of_cards(), 0)
+
+    def test_find_suit(self):
+        self.hand1.add_cards([self.card4, Card(2, "D")])
+        diamonds = self.hand1.find_suit("D")
+        self.assertEqual(len(diamonds), 2, "hand1 should contain exactly 2 diamonds")
+        for card in diamonds:
+            self.assertEqual(card.get_suit(), "D", "find_suit returned a card with an off-suit")
+
+    def test_find_off_suit(self):
+        self.hand1.add_cards([self.card4, Card(2, "D")])
+        not_diamonds = self.hand1.find_off_suit("D")
+        self.assertEqual(len(not_diamonds), 3)
+        for card in not_diamonds:
+            self.assertNotEqual(card.get_suit(), "D", "find_off_suit returned a card with a diamond")
+
+class TestDeckMethods(unittest.TestCase):
+    def setUp(self):
+        self.deck = Deck()
+        self.hand1 = Hand()
+        self.hand2 = Hand()
+
+    def test_shuffle(self):
+        old_deck = self.deck.return_deck()
+        self.deck.shuffle()
+        self.assertNotEqual(old_deck, self.deck.return_deck(), "deck was not shuffled")
+
+    def test_deal(self):
+        self.assertEqual(self.deck.cards_remaining(), 52, "standard deck contains 52 cards")
+        dealt_card = self.deck.deal()
+        self.assertIsInstance(dealt_card, Card)
+        self.assertEqual(self.deck.cards_remaining(), 51, "deck did not deal exactly 1 card")
+
+    def test_deal2(self):
+        while self.deck.cards_remaining() > 0:
+            if self.deck.cards_remaining() % 2 == 0:
+                self.hand1.add_card(self.deck.deal())
+            else:
+                self.hand2.add_card(self.deck.deal())
+
+class TestPlayerMethods(unittest.TestCase):
+    def setUp(self):
+        self.player = Player(12, True)
+        self.card1 = Card(11, "S")
+        self.card2 = Card(10, "H")
+        self.card3 = Card(14, "C")
+        self.card4 = Card(3, "D")
+        self.player.add_cards([self.card1, self.card2, self.card3, self.card4])
+
+    def test_play_card(self):
+        self.assertEqual(self.player.hand.number_of_cards(), 4)
+        played_card = self.player.play_card("b")
+        self.assertIsInstance(played_card, Card)
+        self.assertEqual(played_card.get_rank(), 10)
+        self.assertEqual(played_card.get_suit(), "H")
+        self.assertEqual(self.player.hand.number_of_cards(), 3)
+
+    def test_dump_hand(self):
+        self.assertEqual(self.player.hand.number_of_cards(), 4)
+        self.player.dump_hand()
+        self.assertEqual(self.player.hand.number_of_cards(), 0)
+
+class TestSetbackMethods(unittest.TestCase):
+    def setUp(self):
+        self.setback = Setback(3, 0) # 3 humans, no computers
 
 
-print("-----------Deck-Hand Interactions----------")
-deck = Deck()
-hand1 = Hand()
-hand2 = Hand()
-deck.shuffle()
-hand1.add_card(deck.deal())
-hand2.add_card(deck.deal())
-print(hand1)
-print(hand2)
-while deck.cards_remaining() > 0:
-    if deck.cards_remaining() % 2 == 0:
-        hand1.add_card(deck.deal())
-    else:
-        hand2.add_card(deck.deal())
-print(hand1)
-print(hand2)
 
-
-print("----------Player Tests----------")
-player = Player(12, True)
-player.hand.add_cards([a,b,c])
-player.print_hand()
-player.player_bid(2)
-player.play_card("a")
-print("player played card a")
-player.print_hand()
-player2 = Player(13, True)
-player2.print_hand()
-player2.hand.add_card(a)
-player2.print_hand()
-player.print_hand()
-
-print("----------Setback Tests----------")
-setback = Setback()
-card1 = setback.deck.deal()
-card2 = setback.deck.deal()
-print(card1)
-print(card2)
-setback.players[0].hand.add_card(card1)
-print("player 1's hand")
-setback.players[0].print_hand()
-setback.players[1].hand.add_card(card2)
-print("player 1's hand after player 2 gets a card")
-setback.players[0].print_hand()
-print("player 2's hand")
-setback.players[1].print_hand()
-setback.deal()
-setback.players[0].print_hand()
-setback.players[1].print_hand()
-setback.players[0].hand.dump_hand()
-setback.players[0].print_hand()
-setback.players[1].dump_hand()
-setback.players[1].print_hand()
-
-print(setback)
-
-print("---------Gameplay Tests-------------")
-setback = Setback()
-setback.deck.shuffle()
-setback.deal()
-setback.bid()
-setback.play()
+if __name__ == '__main__':
+    unittest.main()
